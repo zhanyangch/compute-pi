@@ -117,3 +117,23 @@ double compute_pi_avx_unroll(size_t N)
           tmp4[0] + tmp4[1] + tmp4[2] + tmp4[3];
     return pi * 4.0;
 }
+double arctan(double x , size_t N,int threads)
+{
+    double atan = 0.0;
+    double dz = x / N;
+    double z;
+    #pragma omp parallel num_threads(threads)
+    {
+        #pragma omp for private(z) reduction(+:atan)
+        for(size_t i = 0; i<N; i++) {
+            z = (double) x*i / N;
+            atan += dz / (1.0 + z*z );
+        }
+    }
+    return atan;
+}
+double compute_pi_machin(size_t N, int threads)
+{
+    double pi = 4.0 * arctan((double)0.2,N,threads) - arctan((double)1.0/239,N,threads);
+    return pi * 4.0;
+}

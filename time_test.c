@@ -25,7 +25,10 @@ int main(int argc, char const *argv[])
 #if defined(AVXUNROLL)
     pi = compute_pi_avx_unroll(N);
 #endif
-    printf("N = %d , pi = %lf\n", N, pi);
 
+#if defined(MACHIN)
+    pi = compute_pi_machin(N,2);
+#endif
+    printf("N = %d , pi = %lf\n", N, pi);
     return 0;
 }
